@@ -35,7 +35,7 @@ class Fabrik:
             tolerance: float = 0.0) -> None:
 
         if not len(joint_positions) == len(link_lengths) + 1:
-            raise AttributeError("number of joints doesn't match number of links")
+            raise AttributeError("joints and links counts don't match")
 
         self.joints: List[Vector2] = joint_positions
         self.lengths: List[float] = link_lengths
@@ -53,37 +53,31 @@ class Fabrik:
         initial_pos: Vector2 = self.joints[0]
         iteration: int = 0
         while (self.joints[-1] - target).length > self.tol:
+            iteration += 1
+
             self.joints[-1] = target
             for i in range(len(self.joints) - 2, 0, -1):
-                len_to_new = (self.joints[i+1] - self.joints[i]).length
-                len_factor = self.lengths[i] / len_to_new
-
-                self.joints[i] = (1 - len_factor) * self.joints[i+1] + len_factor * self.joints[i]
+                next, current = self.joints[i+1], self.joints[i]
+                len_share = self.lengths[i] / (next - current).length
+                self.joints[i] = (1 - len_share) * next + len_share * current
 
             self.joints[0] = initial_pos
             for i in range(0, len(self.joints) - 1):
-                len_to_new = (self.joints[i+1] - self.joints[i]).length
-                len_factor = self.lengths[i] / len_to_new
-
-                self.joints[i+1] = (1 - len_factor) * self.joints[i] + len_factor * self.joints[i+1]
+                next, current = self.joints[i+1], self.joints[i]
+                len_share = self.lengths[i] / (next - current).length
+                self.joints[i+1] = (1 - len_share) * current + len_share * next
         return iteration
 
     @property
     def angles(self) -> List[float]:
-        self._angles[0] = math.atan2(self.joints[1].y,self.joints[1].x);
+        self._angles[0] = math.atan2(self.joints[1].y,self.joints[1].x)
 
-        prevAngle: float = self._angles[0];
+        prev_angle: float = self._angles[0]
         for i in range(2, len(self.joints)):
-            ax: float = self.joints[i-1].x;
-            ay: float = self.joints[i-1].y;
-            bx: float = self.joints[i].x;
-            by: float = self.joints[i].y;
-
-            aAngle: float = math.atan2(by - ay, bx - ax);
-
-            self._angles[i - 1] = aAngle - prevAngle;
-
-            prevAngle = aAngle;
+            p =  self.joints[i] - self.joints[i-1]
+            abs_angle: float = math.atan2(p.y, p.x)
+            self._angles[i - 1] =  abs_angle - prev_angle
+            prev_angle = abs_angle
         return self._angles
 
     @property
