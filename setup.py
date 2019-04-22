@@ -22,9 +22,9 @@ import setuptools
 
 setuptools.setup(
     name='pyfabrik',
-    version='0.1-dev3',
+    version='0.1-dev4',
     author='Saša Savić',
-    author_email = 'sasa@sasa-savi.com',
+    author_email = 'sasa@sasa-savic.com',
     url = 'https://github.com/saleone/pyfabrik',
     packages=setuptools.find_packages(),
     license='GNU GPLv3',

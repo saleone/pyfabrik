@@ -56,7 +56,7 @@ class Fabrik:
             iteration += 1
 
             self.joints[-1] = target
-            for i in range(len(self.joints) - 2, 0, -1):
+            for i in range(len(self.joints) - 2, -1, -1):
                 next, current = self.joints[i+1], self.joints[i]
                 len_share = self.lengths[i] / (next - current).length
                 self.joints[i] = (1 - len_share) * next + len_share * current
