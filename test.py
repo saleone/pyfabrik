@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # test.py
 #
-# Copyright 2019 Saša Savić <sasa@sasa-savic.com>
+# Copyright 2019 Saša Savić <sasa@savic.one>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

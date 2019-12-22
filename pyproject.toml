@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "pyfabrik"
+version = "0.1.1"
+description = "Python 3 implementation of FABRIK (Forward And Backward Reaching Inverse Kinematics) algorithm."
+authors = ["Saša Savić <sasa@savic.one>"]
+license = "GPL-3.0-or-later"
+readme = "README.rst"
+homepage = "https://github.com/saleone/pyfabrik"
+repository = "https://github.com/saleone/pyfabrik"
+classifiers = [
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.6",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)"
+]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+vectormath = "^0.2.2"
+
+[tool.poetry.dev-dependencies]
+ipython = "^7.10"
+pytest = "^5.3"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
