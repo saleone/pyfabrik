@@ -2,7 +2,10 @@ test:
 	poetry run pytest tests
 
 build:
-	poetry build
+	poetry run poetry build
+
+publish:
+	poetry run poetry publish
 
 check:
 	poetry run mypy pyfabrik --ignore-missing-imports
@@ -15,6 +18,7 @@ format:
 	poetry run black tests
 
 clean:
-	find . -name '__pycache__' -delete
-	find . -name '*.py[co]' -delete
+	find . -name '__pycache__' -exec rm -rv {} \;
+	find . -name '*.py[co]' -exec rm -rv {} \;
 	rm -fr dist
+	rm -fr pyfabrik.egg-info
