@@ -26,6 +26,7 @@ poss = [Vector2(0, 0), Vector2(10, 0), Vector2(20, 0)]
 lens = [10.0, 10.0]
 fab = Fabrik(poss, lens, 0.01)
 
+
 def test_main():
     assert fab.move(Vector2(20, 0)) == 0
     assert fab.angles_deg == [0.0, 0.0, 0.0]
@@ -43,11 +44,15 @@ def test_main():
     assert fab.angles_deg == [30.05682734132901, 119.97158632933548, 0.0]
     print(fab.angles_deg)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     import timeit
-    times = timeit.Timer('test_main()', setup='from __main__ import test_main').repeat(1, number=1)
+
+    times = timeit.Timer("test_main()", setup="from __main__ import test_main").repeat(
+        1, number=1
+    )
 
     times = [time / 100 for time in times]
-    print('finished in {}s:'.format(sum(times)))
+    print("finished in {}s:".format(sum(times)))
     for i, time in enumerate(times):
-        print('\t {} - {}'.format(i+1, time))
+        print("\t {} - {}".format(i + 1, time))

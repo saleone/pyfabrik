@@ -7,6 +7,8 @@ build:
 check:
 	poetry run mypy pyfabrik --ignore-missing-imports
 	poetry run mypy tests --ignore-missing-imports
+	poetry run black --check pyfabrik
+	poetry run black --check tests
 
 format:
 	poetry run black pyfabrik
