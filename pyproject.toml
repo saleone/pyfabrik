@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyfabrik"
-version = "0.1.1"
+version = "0.2.0"
 description = "Python 3 implementation of FABRIK (Forward And Backward Reaching Inverse Kinematics) algorithm."
 authors = ["Saša Savić <sasa@savic.one>"]
 license = "GPL-3.0-or-later"

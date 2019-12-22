@@ -23,10 +23,13 @@ Installation
 
 Implementation
 --------------
-- Basic 2D implementation - DONE
-- Joint movement restrictions in 2D
-- Basic 3D implementation
-- Joint movement restriction in 3D
+- [x] Basic 2D (flat chain)
+- [x] Basic 3D (flat chain)
+- [ ] 3D testing sandbox
+- [ ] Basic 2D joint movement restrictions
+- [ ] Basic 3D joint movement restrictions
+- [ ] Complex chain support 2D
+- [ ] Complex chain support 3D
 
 Contributing
 ------------
