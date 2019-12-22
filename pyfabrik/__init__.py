@@ -17,32 +17,52 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import logging
 import math
 import sys
 
 from vectormath import Vector2
+from vectormath import Vector3
 
 from typing import Tuple
 from typing import List
+from typing import Union
 
 
-class Fabrik:
+class FabrikBase:
+    def __init__(
+        self,
+        joint_positions: List[Union[Vector2, Vector3]],
+        link_lengths: List[float],
+        tolerance: float) -> None:
+
+        if not len(joint_positions) == len(link_lengths) + 1:
+            raise AttributeError("joints and links counts don't match")
+
+        # Tolerance is measured as distance (no negative values) and
+        # when tolerance is 0 solver won't be able to finish.
+        if tolerance <= 0:
+            raise ValueError('tolerance must be > 0')
+        self.tol: float = tolerance
+
+        if any([ll <= 0 for ll in link_lengths]):
+            raise ValueError('link lengths must be > 0')
+
+        self.lengths: List[float] = link_lengths
+        self.max_len: float = sum(link_lengths)
+
+        # each joint sets an angle between two links
+        self._angles: List[float] = [0.0] * len(joint_positions)
+
+
+class Fabrik2D(FabrikBase):
     def __init__(
             self,
             joint_positions: List[Vector2],
             link_lengths: List[float],
             tolerance: float = 0.0) -> None:
 
-        if not len(joint_positions) == len(link_lengths) + 1:
-            raise AttributeError("joints and links counts don't match")
-
+        super().__init__(joint_positions, link_lengths, tolerance)
         self.joints: List[Vector2] = joint_positions
-        self.lengths: List[float] = link_lengths
-        self._angles: List[float] = [0.0] * len(joint_positions)
-        self.tol: float = tolerance
-
-        self.max_len: float = sum(link_lengths)
 
     def move(self, target: Vector2, try_to_reach: bool = True) -> int:
         if not self.solvable(target):
@@ -87,4 +107,18 @@ class Fabrik:
     def solvable(self, target: Vector2) -> bool:
         return self.max_len >= target.length
 
-__all__ = ['Fabrik']
+
+class Fabrik3D(FabrikBase):
+    def __init__(
+            self,
+            joint_positions: List[Vector3],
+            link_lengths: List[float],
+            tolerance: float = 0.0) -> None:
+        super().__init__(joint_positions, link_lengths, tolerance)
+        self.joints: List[Vector3] = joint_positions
+
+class Fabrik(Fabrik2D):
+    pass
+
+
+__all__ = ['Fabrik', 'Fabrik2D', 'Fabrik3D']

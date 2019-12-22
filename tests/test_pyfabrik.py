@@ -23,7 +23,7 @@ from vectormath import Vector2
 from pyfabrik import Fabrik
 
 poss = [Vector2(0, 0), Vector2(10, 0), Vector2(20, 0)]
-lens = [10, 10]
+lens = [10.0, 10.0]
 fab = Fabrik(poss, lens, 0.01)
 
 def test_main():
