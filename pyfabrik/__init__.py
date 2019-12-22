@@ -33,7 +33,8 @@ class FabrikBase:
         self,
         joint_positions: List[Union[Vector2, Vector3]],
         link_lengths: List[float],
-        tolerance: float) -> None:
+        tolerance: float,
+    ) -> None:
 
         if not len(joint_positions) == len(link_lengths) + 1:
             raise AttributeError("joints and links counts don't match")
@@ -41,11 +42,11 @@ class FabrikBase:
         # Tolerance is measured as distance (no negative values) and
         # when tolerance is 0 solver won't be able to finish.
         if tolerance <= 0:
-            raise ValueError('tolerance must be > 0')
+            raise ValueError("tolerance must be > 0")
         self.tol: float = tolerance
 
         if any([ll <= 0 for ll in link_lengths]):
-            raise ValueError('link lengths must be > 0')
+            raise ValueError("link lengths must be > 0")
 
         self.lengths: List[float] = link_lengths
         self.max_len: float = sum(link_lengths)
@@ -56,10 +57,11 @@ class FabrikBase:
 
 class Fabrik2D(FabrikBase):
     def __init__(
-            self,
-            joint_positions: List[Vector2],
-            link_lengths: List[float],
-            tolerance: float = 0.0) -> None:
+        self,
+        joint_positions: List[Vector2],
+        link_lengths: List[float],
+        tolerance: float = 0.0,
+    ) -> None:
 
         super().__init__(joint_positions, link_lengths, tolerance)
         self.joints: List[Vector2] = joint_positions
@@ -77,26 +79,26 @@ class Fabrik2D(FabrikBase):
 
             self.joints[-1] = target
             for i in range(len(self.joints) - 2, -1, -1):
-                next, current = self.joints[i+1], self.joints[i]
+                next, current = self.joints[i + 1], self.joints[i]
                 len_share = self.lengths[i] / (next - current).length
                 self.joints[i] = (1 - len_share) * next + len_share * current
 
             self.joints[0] = initial_pos
             for i in range(0, len(self.joints) - 1):
-                next, current = self.joints[i+1], self.joints[i]
+                next, current = self.joints[i + 1], self.joints[i]
                 len_share = self.lengths[i] / (next - current).length
-                self.joints[i+1] = (1 - len_share) * current + len_share * next
+                self.joints[i + 1] = (1 - len_share) * current + len_share * next
         return iteration
 
     @property
     def angles(self) -> List[float]:
-        self._angles[0] = math.atan2(self.joints[1].y,self.joints[1].x)
+        self._angles[0] = math.atan2(self.joints[1].y, self.joints[1].x)
 
         prev_angle: float = self._angles[0]
         for i in range(2, len(self.joints)):
-            p =  self.joints[i] - self.joints[i-1]
+            p = self.joints[i] - self.joints[i - 1]
             abs_angle: float = math.atan2(p.y, p.x)
-            self._angles[i - 1] =  abs_angle - prev_angle
+            self._angles[i - 1] = abs_angle - prev_angle
             prev_angle = abs_angle
         return self._angles
 
@@ -110,15 +112,17 @@ class Fabrik2D(FabrikBase):
 
 class Fabrik3D(FabrikBase):
     def __init__(
-            self,
-            joint_positions: List[Vector3],
-            link_lengths: List[float],
-            tolerance: float = 0.0) -> None:
+        self,
+        joint_positions: List[Vector3],
+        link_lengths: List[float],
+        tolerance: float = 0.0,
+    ) -> None:
         super().__init__(joint_positions, link_lengths, tolerance)
         self.joints: List[Vector3] = joint_positions
+
 
 class Fabrik(Fabrik2D):
     pass
 
 
-__all__ = ['Fabrik', 'Fabrik2D', 'Fabrik3D']
+__all__ = ["Fabrik", "Fabrik2D", "Fabrik3D"]
