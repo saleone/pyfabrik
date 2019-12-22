@@ -20,14 +20,21 @@
 
 
 from vectormath import Vector2
+from vectormath import Vector3
+from pyfabrik import Fabrik2D
+from pyfabrik import Fabrik3D
 from pyfabrik import Fabrik
 
-poss = [Vector2(0, 0), Vector2(10, 0), Vector2(20, 0)]
-lens = [10.0, 10.0]
-fab = Fabrik(poss, lens, 0.01)
+
+def test_default_fabrik_class_is_2d_solver():
+    assert Fabrik is Fabrik2D
 
 
-def test_main():
+def test_2d_correctly_moves_the_joints():
+    poss = [Vector2(0, 0), Vector2(10, 0), Vector2(20, 0)]
+    lens = [10.0, 10.0]
+    fab = Fabrik2D(poss, lens, 0.01)
+
     assert fab.move(Vector2(20, 0)) == 0
     assert fab.angles_deg == [0.0, 0.0, 0.0]
     print(fab.angles_deg)
@@ -41,6 +48,28 @@ def test_main():
     print(fab.angles_deg)
 
     assert fab.move(Vector2(0, 10)) == 5
+    assert fab.angles_deg == [30.05682734132901, 119.97158632933548, 0.0]
+    print(fab.angles_deg)
+
+
+def test_3d_correctly_moves_in_2d_space():
+    poss = [Vector3(0, 0, 0), Vector3(10, 0, 0), Vector3(20, 0, 0)]
+    lens = [10.0, 10.0]
+    fab = Fabrik3D(poss, lens, 0.01)
+
+    assert fab.move(Vector3(20, 0, 0)) == 0
+    assert fab.angles_deg == [0.0, 0.0, 0.0]
+    print(fab.angles_deg)
+
+    assert fab.move(Vector3(60, 60, 0)) == 249
+    assert fab.angles_deg == [43.187653094161064, 3.622882738369357, 0.0]
+    print(fab.angles_deg)
+
+    assert fab.move(Vector3(0, 20, 0)) == 250
+    assert fab.angles_deg == [88.19119752090381, 3.6158044811401675, 0.0]
+    print(fab.angles_deg)
+
+    assert fab.move(Vector3(0, 10, 0)) == 5
     assert fab.angles_deg == [30.05682734132901, 119.97158632933548, 0.0]
     print(fab.angles_deg)
 

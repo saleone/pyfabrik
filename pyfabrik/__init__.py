@@ -54,6 +54,47 @@ class FabrikBase:
         # each joint sets an angle between two links
         self._angles: List[float] = [0.0] * len(joint_positions)
 
+        self.joints: List[Union[Vector2, Vector3]] = []
+
+    @property
+    def angles(self) -> List[float]:
+        self._angles[0] = math.atan2(self.joints[1].y, self.joints[1].x)
+
+        prev_angle: float = self._angles[0]
+        for i in range(2, len(self.joints)):
+            p = self.joints[i] - self.joints[i - 1]
+            abs_angle: float = math.atan2(p.y, p.x)
+            self._angles[i - 1] = abs_angle - prev_angle
+            prev_angle = abs_angle
+        return self._angles
+
+    def solvable(self, target: Union[Vector2, Vector3]) -> bool:
+        return self.max_len >= target.length
+
+    @property
+    def angles_deg(self) -> List[float]:
+        return [math.degrees(val) for val in self.angles]
+
+    def _iterate(
+        self, initial_position: Union[Vector2, Vector3], target: Union[Vector2, Vector3]
+    ) -> int:
+        iteration: int = 0
+        while (self.joints[-1] - target).length > self.tol:
+            iteration += 1
+
+            self.joints[-1] = target
+            for i in range(len(self.joints) - 2, -1, -1):
+                next, current = self.joints[i + 1], self.joints[i]
+                len_share = self.lengths[i] / (next - current).length
+                self.joints[i] = (1 - len_share) * next + len_share * current
+
+            self.joints[0] = initial_position
+            for i in range(0, len(self.joints) - 1):
+                next, current = self.joints[i + 1], self.joints[i]
+                len_share = self.lengths[i] / (next - current).length
+                self.joints[i + 1] = (1 - len_share) * current + len_share * next
+        return iteration
+
 
 class Fabrik2D(FabrikBase):
     def __init__(
@@ -71,43 +112,10 @@ class Fabrik2D(FabrikBase):
             if not try_to_reach:
                 return 0
             target = target.as_length(self.max_len)
-
-        initial_pos: Vector2 = self.joints[0]
-        iteration: int = 0
-        while (self.joints[-1] - target).length > self.tol:
-            iteration += 1
-
-            self.joints[-1] = target
-            for i in range(len(self.joints) - 2, -1, -1):
-                next, current = self.joints[i + 1], self.joints[i]
-                len_share = self.lengths[i] / (next - current).length
-                self.joints[i] = (1 - len_share) * next + len_share * current
-
-            self.joints[0] = initial_pos
-            for i in range(0, len(self.joints) - 1):
-                next, current = self.joints[i + 1], self.joints[i]
-                len_share = self.lengths[i] / (next - current).length
-                self.joints[i + 1] = (1 - len_share) * current + len_share * next
-        return iteration
-
-    @property
-    def angles(self) -> List[float]:
-        self._angles[0] = math.atan2(self.joints[1].y, self.joints[1].x)
-
-        prev_angle: float = self._angles[0]
-        for i in range(2, len(self.joints)):
-            p = self.joints[i] - self.joints[i - 1]
-            abs_angle: float = math.atan2(p.y, p.x)
-            self._angles[i - 1] = abs_angle - prev_angle
-            prev_angle = abs_angle
-        return self._angles
-
-    @property
-    def angles_deg(self) -> List[float]:
-        return [math.degrees(val) for val in self.angles]
+        return self._iterate(self.joints[0], target)
 
     def solvable(self, target: Vector2) -> bool:
-        return self.max_len >= target.length
+        return super().solvable(target)
 
 
 class Fabrik3D(FabrikBase):
@@ -120,9 +128,17 @@ class Fabrik3D(FabrikBase):
         super().__init__(joint_positions, link_lengths, tolerance)
         self.joints: List[Vector3] = joint_positions
 
+    def solvable(self, target: Vector3) -> bool:
+        return super().solvable(target)
 
-class Fabrik(Fabrik2D):
-    pass
+    def move(self, target: Vector3, try_to_reach: bool = True) -> int:
+        if not self.solvable(target):
+            if not try_to_reach:
+                return 0
+            target = target.as_length(self.max_len)
+        return self._iterate(self.joints[0], target)
 
+
+Fabrik = Fabrik2D
 
 __all__ = ["Fabrik", "Fabrik2D", "Fabrik3D"]
