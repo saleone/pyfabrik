@@ -19,6 +19,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 
+import pytest
 from vectormath import Vector2
 from vectormath import Vector3
 from pyfabrik import Fabrik2D
@@ -32,8 +33,7 @@ def test_default_fabrik_class_is_2d_solver():
 
 def test_2d_correctly_moves_the_joints():
     poss = [Vector2(0, 0), Vector2(10, 0), Vector2(20, 0)]
-    lens = [10.0, 10.0]
-    fab = Fabrik2D(poss, lens, 0.01)
+    fab = Fabrik2D(poss, 0.01)
 
     assert fab.move(Vector2(20, 0)) == 0
     assert fab.angles_deg == [0.0, 0.0, 0.0]
@@ -54,8 +54,7 @@ def test_2d_correctly_moves_the_joints():
 
 def test_3d_correctly_moves_in_2d_space():
     poss = [Vector3(0, 0, 0), Vector3(10, 0, 0), Vector3(20, 0, 0)]
-    lens = [10.0, 10.0]
-    fab = Fabrik3D(poss, lens, 0.01)
+    fab = Fabrik3D(poss, 0.01)
 
     assert fab.move(Vector3(20, 0, 0)) == 0
     assert fab.angles_deg == [0.0, 0.0, 0.0]
@@ -72,6 +71,21 @@ def test_3d_correctly_moves_in_2d_space():
     assert fab.move(Vector3(0, 10, 0)) == 5
     assert fab.angles_deg == [30.05682734132901, 119.97158632933548, 0.0]
     print(fab.angles_deg)
+
+
+def test_value_error_raised_when_joints_overlap():
+    poss = [Vector3(0, 0, 0), Vector3(10, 0, 0), Vector3(10, 0, 0)]
+    with pytest.raises(ValueError) as exinfo:
+        fab = Fabrik3D(poss, 0.01)
+    assert str(exinfo.value) == "link lengths must be > 0"
+
+
+@pytest.mark.parametrize("tolerance", [-1.0, 0.0])
+def test_value_error_raised_when_tolerance_isnt_positive(tolerance):
+    poss = [Vector3(0, 0, 0), Vector3(10, 0, 0), Vector3(10, 0, 0)]
+    with pytest.raises(ValueError) as exinfo:
+        fab = Fabrik3D(poss, tolerance)
+    assert str(exinfo.value) == "tolerance must be > 0"
 
 
 if __name__ == "__main__":

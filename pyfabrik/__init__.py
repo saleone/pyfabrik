@@ -30,20 +30,20 @@ from typing import Union
 
 class FabrikBase:
     def __init__(
-        self,
-        joint_positions: List[Union[Vector2, Vector3]],
-        link_lengths: List[float],
-        tolerance: float,
+        self, joint_positions: List[Union[Vector2, Vector3]], tolerance: float
     ) -> None:
-
-        if not len(joint_positions) == len(link_lengths) + 1:
-            raise AttributeError("joints and links counts don't match")
-
         # Tolerance is measured as distance (no negative values) and
         # when tolerance is 0 solver won't be able to finish.
         if tolerance <= 0:
             raise ValueError("tolerance must be > 0")
         self.tol: float = tolerance
+
+        link_lengths = []
+
+        joint_a = joint_positions[0]
+        for joint_b in joint_positions[1:]:
+            link_lengths.append((joint_a - joint_b).length)
+            joint_a = joint_b
 
         if any([ll <= 0 for ll in link_lengths]):
             raise ValueError("link lengths must be > 0")
@@ -75,6 +75,13 @@ class FabrikBase:
     def angles_deg(self) -> List[float]:
         return [math.degrees(val) for val in self.angles]
 
+    def move(self, target: Union[Vector2, Vector3], try_to_reach: bool = True) -> int:
+        if not self.solvable(target):
+            if not try_to_reach:
+                return 0
+            target = target.as_length(self.max_len)
+        return self._iterate(self.joints[0], target)
+
     def _iterate(
         self, initial_position: Union[Vector2, Vector3], target: Union[Vector2, Vector3]
     ) -> int:
@@ -97,46 +104,28 @@ class FabrikBase:
 
 
 class Fabrik2D(FabrikBase):
-    def __init__(
-        self,
-        joint_positions: List[Vector2],
-        link_lengths: List[float],
-        tolerance: float = 0.0,
-    ) -> None:
+    def __init__(self, joint_positions: List[Vector2], tolerance: float = 0.0) -> None:
 
-        super().__init__(joint_positions, link_lengths, tolerance)
+        super().__init__(joint_positions, tolerance)
         self.joints: List[Vector2] = joint_positions
 
     def move(self, target: Vector2, try_to_reach: bool = True) -> int:
-        if not self.solvable(target):
-            if not try_to_reach:
-                return 0
-            target = target.as_length(self.max_len)
-        return self._iterate(self.joints[0], target)
+        return super().move(target, try_to_reach)
 
     def solvable(self, target: Vector2) -> bool:
         return super().solvable(target)
 
 
 class Fabrik3D(FabrikBase):
-    def __init__(
-        self,
-        joint_positions: List[Vector3],
-        link_lengths: List[float],
-        tolerance: float = 0.0,
-    ) -> None:
-        super().__init__(joint_positions, link_lengths, tolerance)
+    def __init__(self, joint_positions: List[Vector3], tolerance: float = 0.0) -> None:
+        super().__init__(joint_positions, tolerance)
         self.joints: List[Vector3] = joint_positions
 
     def solvable(self, target: Vector3) -> bool:
         return super().solvable(target)
 
     def move(self, target: Vector3, try_to_reach: bool = True) -> int:
-        if not self.solvable(target):
-            if not try_to_reach:
-                return 0
-            target = target.as_length(self.max_len)
-        return self._iterate(self.joints[0], target)
+        return super().move(target, try_to_reach)
 
 
 Fabrik = Fabrik2D
