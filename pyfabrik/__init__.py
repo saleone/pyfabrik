@@ -80,12 +80,12 @@ class FabrikBase:
             if not try_to_reach:
                 return 0
             target = target.as_length(self.max_len)
-        return self._iterate(self.joints[0], target)
+        # Why do I have to pass first joint here?
+        return self._iterate(target)
 
-    def _iterate(
-        self, initial_position: Union[Vector2, Vector3], target: Union[Vector2, Vector3]
-    ) -> int:
+    def _iterate(self, target: Union[Vector2, Vector3]) -> int:
         iteration: int = 0
+        initial_position: Union[Vector2, Vector3] = self.joints[0]
         while (self.joints[-1] - target).length > self.tol:
             iteration += 1
 

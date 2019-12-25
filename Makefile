@@ -17,6 +17,8 @@ format:
 	poetry run black pyfabrik
 	poetry run black tests
 
+fmt: format
+
 clean:
 	find . -name '__pycache__' -exec rm -rv {} \;
 	find . -name '*.py[co]' -exec rm -rv {} \;
