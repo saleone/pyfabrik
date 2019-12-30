@@ -35,19 +35,19 @@ def test_2d_correctly_moves_the_joints():
     poss = [Vector2(0, 0), Vector2(10, 0), Vector2(20, 0)]
     fab = Fabrik2D(poss, 0.01)
 
-    assert fab.move(Vector2(20, 0)) == 0
+    assert fab.move_to(Vector2(20, 0)) == 0
     assert fab.angles_deg == [0.0, 0.0, 0.0]
     print(fab.angles_deg)
 
-    assert fab.move(Vector2(60, 60)) == 249
+    assert fab.move_to(Vector2(60, 60)) == 249
     assert fab.angles_deg == [43.187653094161064, 3.622882738369357, 0.0]
     print(fab.angles_deg)
 
-    assert fab.move(Vector2(0, 20)) == 250
+    assert fab.move_to(Vector2(0, 20)) == 250
     assert fab.angles_deg == [88.19119752090381, 3.6158044811401675, 0.0]
     print(fab.angles_deg)
 
-    assert fab.move(Vector2(0, 10)) == 5
+    assert fab.move_to(Vector2(0, 10)) == 5
     assert fab.angles_deg == [30.05682734132901, 119.97158632933548, 0.0]
     print(fab.angles_deg)
 
@@ -56,19 +56,19 @@ def test_3d_correctly_moves_in_2d_space():
     poss = [Vector3(0, 0, 0), Vector3(10, 0, 0), Vector3(20, 0, 0)]
     fab = Fabrik3D(poss, 0.01)
 
-    assert fab.move(Vector3(20, 0, 0)) == 0
+    assert fab.move_to(Vector3(20, 0, 0)) == 0
     assert fab.angles_deg == [0.0, 0.0, 0.0]
     print(fab.angles_deg)
 
-    assert fab.move(Vector3(60, 60, 0)) == 249
+    assert fab.move_to(Vector3(60, 60, 0)) == 249
     assert fab.angles_deg == [43.187653094161064, 3.622882738369357, 0.0]
     print(fab.angles_deg)
 
-    assert fab.move(Vector3(0, 20, 0)) == 250
+    assert fab.move_to(Vector3(0, 20, 0)) == 250
     assert fab.angles_deg == [88.19119752090381, 3.6158044811401675, 0.0]
     print(fab.angles_deg)
 
-    assert fab.move(Vector3(0, 10, 0)) == 5
+    assert fab.move_to(Vector3(0, 10, 0)) == 5
     assert fab.angles_deg == [30.05682734132901, 119.97158632933548, 0.0]
     print(fab.angles_deg)
 

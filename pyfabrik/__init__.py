@@ -36,7 +36,7 @@ class FabrikBase:
         # when tolerance is 0 solver won't be able to finish.
         if tolerance <= 0:
             raise ValueError("tolerance must be > 0")
-        self.tol: float = tolerance
+        self.tolerance: float = tolerance
 
         link_lengths = []
 
@@ -75,28 +75,29 @@ class FabrikBase:
     def angles_deg(self) -> List[float]:
         return [math.degrees(val) for val in self.angles]
 
-    def move(self, target: Union[Vector2, Vector3], try_to_reach: bool = True) -> int:
+    def move_to(self, target: Union[Vector2, Vector3], try_to_reach: bool = True) -> int:
         if not self.solvable(target):
             if not try_to_reach:
                 return 0
             target = target.as_length(self.max_len)
-        # Why do I have to pass first joint here?
         return self._iterate(target)
 
     def _iterate(self, target: Union[Vector2, Vector3]) -> int:
         iteration: int = 0
         initial_position: Union[Vector2, Vector3] = self.joints[0]
-        while (self.joints[-1] - target).length > self.tol:
+        last: int = len(self.joints) - 1
+
+        while (self.joints[-1] - target).length > self.tolerance:
             iteration += 1
 
             self.joints[-1] = target
-            for i in range(len(self.joints) - 2, -1, -1):
+            for i in reversed(range(0, last)):
                 next, current = self.joints[i + 1], self.joints[i]
                 len_share = self.lengths[i] / (next - current).length
                 self.joints[i] = (1 - len_share) * next + len_share * current
 
             self.joints[0] = initial_position
-            for i in range(0, len(self.joints) - 1):
+            for i in range(0, last):
                 next, current = self.joints[i + 1], self.joints[i]
                 len_share = self.lengths[i] / (next - current).length
                 self.joints[i + 1] = (1 - len_share) * current + len_share * next
@@ -109,8 +110,8 @@ class Fabrik2D(FabrikBase):
         super().__init__(joint_positions, tolerance)
         self.joints: List[Vector2] = joint_positions
 
-    def move(self, target: Vector2, try_to_reach: bool = True) -> int:
-        return super().move(target, try_to_reach)
+    def move_to(self, target: Vector2, try_to_reach: bool = True) -> int:
+        return super().move_to(target, try_to_reach)
 
     def solvable(self, target: Vector2) -> bool:
         return super().solvable(target)
@@ -124,8 +125,8 @@ class Fabrik3D(FabrikBase):
     def solvable(self, target: Vector3) -> bool:
         return super().solvable(target)
 
-    def move(self, target: Vector3, try_to_reach: bool = True) -> int:
-        return super().move(target, try_to_reach)
+    def move_to(self, target: Vector3, try_to_reach: bool = True) -> int:
+        return super().move_to(target, try_to_reach)
 
 
 Fabrik = Fabrik2D
