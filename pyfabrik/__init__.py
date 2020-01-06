@@ -75,7 +75,9 @@ class FabrikBase:
     def angles_deg(self) -> List[float]:
         return [math.degrees(val) for val in self.angles]
 
-    def move_to(self, target: Union[Vector2, Vector3], try_to_reach: bool = True) -> int:
+    def move_to(
+        self, target: Union[Vector2, Vector3], try_to_reach: bool = True
+    ) -> int:
         if not self.solvable(target):
             if not try_to_reach:
                 return 0

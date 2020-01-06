@@ -13,6 +13,26 @@ Backward Reaching Inverse Kinematics).
 
     pip install pyfabrik
 
+## Usage
+
+**NOTE: API is still very unstable (until the 1.0 release). Suggestions are welcome.**
+
+    import pyfabrik
+    from vectormath import Vector3
+
+    initial_joint_positions = [Vector3(0, 0, 0), Vector3(10, 0, 0), Vector3(20, 0, 0)]
+    tolerance = 0.01
+
+    # Initialize the Fabrik class (Fabrik, Fabrik2D or Fabrik3D)
+    fab = pyfabrik.Fabrik3D(initial_joint_positions, tolerance)
+
+    fab.move_to(Vector3(20, 0, 0))
+    fab.angles_deg # Holds [0.0, 0.0, 0.0]
+
+    fab.move_to(Vector3(60, 60, 0)) # Return 249 as number of iterations executed
+    fab.angles_deg # Holds [43.187653094161064, 3.622882738369357, 0.0]
+
+
 ## Goal
 ![Inverse kinematics example with human skeleton.](http://www.andreasaristidou.com/publications/images/FABRIC_gif_1.gif)
 
@@ -30,8 +50,9 @@ Backward Reaching Inverse Kinematics).
 
 __All contributions are appreciated.__
 
-You can find almost everything you need in the [paper](http://www.andreasaristidou.com/publications/papers/FABRIK.pdf).
-On FABRIKs [homepage](http://www.andreasaristidou.com/FABRIK.html) you can find examples and links to other implementations.
+Read the paper [paper](http://www.andreasaristidou.com/publications/papers/FABRIK.pdf).
+
+FABRIKs [homepage](http://www.andreasaristidou.com/FABRIK.html) has links to other implementations.
 
 ## License
 [GNU GENERAL PUBLIC LICENSE Version 3](./LICENSE)
