@@ -17,20 +17,23 @@ Backward Reaching Inverse Kinematics).
 
 **NOTE: API is still very unstable (until the 1.0 release). Suggestions are welcome.**
 
-    import pyfabrik
-    from vectormath import Vector3
+```python
 
-    initial_joint_positions = [Vector3(0, 0, 0), Vector3(10, 0, 0), Vector3(20, 0, 0)]
-    tolerance = 0.01
+import pyfabrik
+from vectormath import Vector3
 
-    # Initialize the Fabrik class (Fabrik, Fabrik2D or Fabrik3D)
-    fab = pyfabrik.Fabrik3D(initial_joint_positions, tolerance)
+initial_joint_positions = [Vector3(0, 0, 0), Vector3(10, 0, 0), Vector3(20, 0, 0)]
+tolerance = 0.01
 
-    fab.move_to(Vector3(20, 0, 0))
-    fab.angles_deg # Holds [0.0, 0.0, 0.0]
+# Initialize the Fabrik class (Fabrik, Fabrik2D or Fabrik3D)
+fab = pyfabrik.Fabrik3D(initial_joint_positions, tolerance)
 
-    fab.move_to(Vector3(60, 60, 0)) # Return 249 as number of iterations executed
-    fab.angles_deg # Holds [43.187653094161064, 3.622882738369357, 0.0]
+fab.move_to(Vector3(20, 0, 0))
+fab.angles_deg # Holds [0.0, 0.0, 0.0]
+
+fab.move_to(Vector3(60, 60, 0)) # Return 249 as number of iterations executed
+fab.angles_deg # Holds [43.187653094161064, 3.622882738369357, 0.0]
+```
 
 
 ## Goal
