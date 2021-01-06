@@ -1,22 +1,3 @@
-# __init__.py
-#
-# Copyright 2019 Saša Savić <sasa@savic.one>
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-# SPDX-License-Identifier: GPL-3.0-or-later
-
 import math
 import sys
 
@@ -52,12 +33,14 @@ class FabrikBase:
         self.max_len: float = sum(link_lengths)
 
         # each joint sets an angle between two links
+        # TODO: Should be calculated based on the joint_positions
         self._angles: List[float] = [0.0] * len(joint_positions)
 
         self.joints: List[Union[Vector2, Vector3]] = []
 
     @property
     def angles(self) -> List[float]:
+        # TODO: Only return if chain has moved. That will require a flag.
         self._angles[0] = math.atan2(self.joints[1].y, self.joints[1].x)
 
         prev_angle: float = self._angles[0]

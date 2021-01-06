@@ -3,7 +3,7 @@ name = "pyfabrik"
 version = "0.5.0-dev1"
 description = "Python 3 implementation of FABRIK (Forward And Backward Reaching Inverse Kinematics) algorithm."
 authors = ["Saša Savić <sasa@savic.one>"]
-license = "GPL-3.0-or-later"
+license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/saleone/pyfabrik"
 repository = "https://github.com/saleone/pyfabrik"
@@ -11,7 +11,7 @@ classifiers = [
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.6",
     "Operating System :: OS Independent",
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)"
+    "License :: OSI Approved :: MIT License"
 ]
 
 [tool.poetry.dependencies]
