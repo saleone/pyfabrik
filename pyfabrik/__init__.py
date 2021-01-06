@@ -18,7 +18,6 @@ class FabrikBase:
         if tolerance <= 0:
             raise ValueError("tolerance must be > 0")
         self.tolerance: float = tolerance
-
         link_lengths = []
 
         joint_a = joint_positions[0]
@@ -32,23 +31,29 @@ class FabrikBase:
         self.lengths: List[float] = link_lengths
         self.max_len: float = sum(link_lengths)
 
-        # each joint sets an angle between two links
-        # TODO: Should be calculated based on the joint_positions
-        self._angles: List[float] = [0.0] * len(joint_positions)
-
-        self.joints: List[Union[Vector2, Vector3]] = []
+        # Calculate initial angles
+        self._has_moved = True
+        self._angles: List[float] = []
+        _ = self.angles
 
     @property
     def angles(self) -> List[float]:
-        # TODO: Only return if chain has moved. That will require a flag.
-        self._angles[0] = math.atan2(self.joints[1].y, self.joints[1].x)
+        # Only calculate angles if chain moved.
+        if not self._has_moved:
+            return self._angles
 
-        prev_angle: float = self._angles[0]
+        print(self.joints)
+        angles = [math.atan2(self.joints[1].y, self.joints[1].x)]
+
+        prev_angle: float = angles[0]
         for i in range(2, len(self.joints)):
             p = self.joints[i] - self.joints[i - 1]
             abs_angle: float = math.atan2(p.y, p.x)
-            self._angles[i - 1] = abs_angle - prev_angle
+            angles.append(abs_angle - prev_angle)
             prev_angle = abs_angle
+
+        self.has_moved = False
+        self._angles = angles
         return self._angles
 
     def solvable(self, target: Union[Vector2, Vector3]) -> bool:
@@ -91,9 +96,9 @@ class FabrikBase:
 
 class Fabrik2D(FabrikBase):
     def __init__(self, joint_positions: List[Vector2], tolerance: float = 0.0) -> None:
-
-        super().__init__(joint_positions, tolerance)
         self.joints: List[Vector2] = joint_positions
+        print(self.joints)
+        super().__init__(joint_positions, tolerance)
 
     def move_to(self, target: Vector2, try_to_reach: bool = True) -> int:
         return super().move_to(target, try_to_reach)
@@ -104,8 +109,8 @@ class Fabrik2D(FabrikBase):
 
 class Fabrik3D(FabrikBase):
     def __init__(self, joint_positions: List[Vector3], tolerance: float = 0.0) -> None:
-        super().__init__(joint_positions, tolerance)
         self.joints: List[Vector3] = joint_positions
+        super().__init__(joint_positions, tolerance)
 
     def solvable(self, target: Vector3) -> bool:
         return super().solvable(target)
