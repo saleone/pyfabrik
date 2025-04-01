@@ -57,7 +57,7 @@ def test_3d_correctly_moves_in_2d_space():
 def test_value_error_raised_when_joints_overlap():
     poss = [Vector3(0, 0, 0), Vector3(10, 0, 0), Vector3(10, 0, 0)]
     with pytest.raises(ValueError) as exinfo:
-        fab = Fabrik3D(poss, 0.01)
+        _ = Fabrik3D(poss, 0.01)
     assert str(exinfo.value) == "link lengths must be > 0"
 
 

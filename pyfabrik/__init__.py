@@ -10,6 +10,8 @@ from typing import Union
 
 
 class FabrikBase:
+    joints: list[Vector2 | Vector3]
+
     def __init__(
         self, joint_positions: List[Union[Vector2, Vector3]], tolerance: float
     ) -> None:

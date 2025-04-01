@@ -1,29 +1,36 @@
-[tool.poetry]
+[project]
 name = "pyfabrik"
 version = "0.5.0-dev1"
 description = "Python 3 implementation of FABRIK (Forward And Backward Reaching Inverse Kinematics) algorithm."
-authors = ["Saša Savić <sasa@savic.one>"]
-license = "MIT"
+authors = [
+    { name = "Saša Savić", email = "sasa@savic.one" }
+]
+license = { text = "MIT" }
 readme = "README.md"
-homepage = "https://github.com/saleone/pyfabrik"
-repository = "https://github.com/saleone/pyfabrik"
 classifiers = [
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.6",
     "Operating System :: OS Independent",
     "License :: OSI Approved :: MIT License"
 ]
+requires-python = ">=3.6"
 
-[tool.poetry.dependencies]
-python = "^3.6"
-vectormath = "^0.2.2"
+dependencies = [
+    "vectormath>=0.2.2"
+]
 
-[tool.poetry.dev-dependencies]
-ipython = "^7.10"
-pytest = "^5.3"
-mypy = "^0.761.0"
-black = {version = "^18.3-alpha.0", allow-prereleases = true}
+[project.urls]
+homepage = "https://github.com/saleone/pyfabrik"
+repository = "https://github.com/saleone/pyfabrik"
+
+[dependency-groups]
+dev = [
+    "ipython>=7.10",
+    "pytest>=5.3",
+    "mypy>=0.761.0",
+    "black>=18.3a0"
+]
 
 [build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+requires = ["setuptools", "wheel", "uv"]
+build-backend = "setuptools.build_meta"
