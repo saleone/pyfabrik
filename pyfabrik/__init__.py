@@ -1,19 +1,14 @@
 import math
-import sys
 
 from vectormath import Vector2
 from vectormath import Vector3
-
-from typing import Tuple
-from typing import List
-from typing import Union
 
 
 class FabrikBase:
     joints: list[Vector2 | Vector3]
 
     def __init__(
-        self, joint_positions: List[Union[Vector2, Vector3]], tolerance: float
+        self, joint_positions: list[Vector2 | Vector3], tolerance: float
     ) -> None:
         # Tolerance is measured as distance (no negative values) and
         # when tolerance is 0 solver won't be able to finish.
@@ -30,16 +25,16 @@ class FabrikBase:
         if any([ll <= 0 for ll in link_lengths]):
             raise ValueError("link lengths must be > 0")
 
-        self.lengths: List[float] = link_lengths
+        self.lengths: list[float] = link_lengths
         self.max_len: float = sum(link_lengths)
 
         # Calculate initial angles
         self._has_moved = True
-        self._angles: List[float] = []
+        self._angles: list[float] = []
         _ = self.angles
 
     @property
-    def angles(self) -> List[float]:
+    def angles(self) -> list[float]:
         # Only calculate angles if chain moved.
         if not self._has_moved:
             return self._angles
@@ -58,25 +53,23 @@ class FabrikBase:
         self._angles = angles
         return self._angles
 
-    def solvable(self, target: Union[Vector2, Vector3]) -> bool:
+    def solvable(self, target: Vector2 | Vector3) -> bool:
         return self.max_len >= target.length
 
     @property
-    def angles_deg(self) -> List[float]:
+    def angles_deg(self) -> list[float]:
         return [math.degrees(val) for val in self.angles]
 
-    def move_to(
-        self, target: Union[Vector2, Vector3], try_to_reach: bool = True
-    ) -> int:
+    def move_to(self, target: Vector2 | Vector3, try_to_reach: bool = True) -> int:
         if not self.solvable(target):
             if not try_to_reach:
                 return 0
             target = target.as_length(self.max_len)
         return self._iterate(target)
 
-    def _iterate(self, target: Union[Vector2, Vector3]) -> int:
+    def _iterate(self, target: Vector2 | Vector3) -> int:
         iteration: int = 0
-        initial_position: Union[Vector2, Vector3] = self.joints[0]
+        initial_position: Vector2 | Vector3 = self.joints[0]
         last: int = len(self.joints) - 1
 
         while (self.joints[-1] - target).length > self.tolerance:
@@ -97,8 +90,8 @@ class FabrikBase:
 
 
 class Fabrik2D(FabrikBase):
-    def __init__(self, joint_positions: List[Vector2], tolerance: float = 0.0) -> None:
-        self.joints: List[Vector2] = joint_positions
+    def __init__(self, joint_positions: list[Vector2], tolerance: float = 0.0) -> None:
+        self.joints: list[Vector2] = joint_positions
         print(self.joints)
         super().__init__(joint_positions, tolerance)
 
@@ -110,8 +103,8 @@ class Fabrik2D(FabrikBase):
 
 
 class Fabrik3D(FabrikBase):
-    def __init__(self, joint_positions: List[Vector3], tolerance: float = 0.0) -> None:
-        self.joints: List[Vector3] = joint_positions
+    def __init__(self, joint_positions: list[Vector3], tolerance: float = 0.0) -> None:
+        self.joints: list[Vector3] = joint_positions
         super().__init__(joint_positions, tolerance)
 
     def solvable(self, target: Vector3) -> bool:
